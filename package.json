@@ -1,0 +1,28 @@
+{
+  "name": "vroom",
+  "version": "1.0.0",
+  "description": "a basic vr game",
+  "main": "server.js",
+  "scripts": {
+    "test": "node server.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukes611/VRoom.git"
+  },
+  "keywords": [
+    "vr",
+    "js",
+    "game"
+  ],
+  "author": "luke lincoln",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lukes611/VRoom/issues"
+  },
+  "homepage": "https://github.com/lukes611/VRoom#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
