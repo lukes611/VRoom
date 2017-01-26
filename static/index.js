@@ -55,15 +55,6 @@ world.add(floor.body);
 cubes.forEach(cube => world.add(cube.body));
 
 
-function updatePhysicsOnObject(mesh, body){
-    mesh.position.x = body.position.x;
-    mesh.position.y = body.position.y;
-    mesh.position.z = body.position.z;
-    mesh.quaternion.x = body.quaternion.x;
-    mesh.quaternion.y = body.quaternion.y;
-    mesh.quaternion.z = body.quaternion.z;
-    mesh.quaternion.w = body.quaternion.w;
-}
 
 var lastTime;
 function render(){
@@ -76,7 +67,7 @@ function render(){
         world.step(1 * dt);
     }
     
-    updatePhysicsOnObject(floor.mesh, floor.body);
+    floor.mesh.upd();
     cubes.forEach(cube => cube.mesh.upd());
     
     
@@ -91,3 +82,19 @@ function interact(){
     c = cubes[0].body;
     c.applyImpulse(impulse, worldPoint);
 }
+
+
+//LVR
+var lvr = new LVR();
+window.addEventListener('deviceorientation', function(e){
+    //console.log(a++);
+    if(1){
+        lvr.update(e.alpha, e.beta, e.gamma);
+        var pos = new LV3(camera.position.x, camera.position.y, camera.position.z);
+        var ax = lvr.getMatrix().transpose();
+        ax = new LV3(ax.arr[2], ax.arr[6], ax.arr[10]);
+        //console.log(ax+'')
+        var lat = pos.add(ax);
+        camera.lookAt(new THREE.Vector3(lat.x, lat.y, lat.z));
+    }
+});
