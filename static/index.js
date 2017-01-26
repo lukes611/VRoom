@@ -8,7 +8,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 
-var cubes = [generateCube({position:[0,3,0],rotation:[20,5,3], mass:.05}),
+var cubes = [generateCube({position:[0,3,0],rotation:[20,5,3], mass:.5}),
             generateCube({position:[0,10,0], color:0x00ff00, rotation:[0,0,0]}),
             generateCube({position:[0, 8, -.5], color:0xff0000}),
             generateCube({position:[-2,5,0], color:0xa1a1a1})];
@@ -91,8 +91,8 @@ window.addEventListener('deviceorientation', function(e){
     if(1){
         lvr.update(e.alpha, e.beta, e.gamma);
         var pos = new LV3(camera.position.x, camera.position.y, camera.position.z);
-        var ax = lvr.getMatrix().transpose();
-        ax = new LV3(ax.arr[2], ax.arr[6], ax.arr[10]);
+        var ax = lvr.getMatrix();//.transpose();
+        ax = new LV3(-ax.arr[2], ax.arr[6], ax.arr[10]);
         //console.log(ax+'')
         var lat = pos.add(ax);
         camera.lookAt(new THREE.Vector3(lat.x, lat.y, lat.z));
