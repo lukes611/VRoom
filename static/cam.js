@@ -58,6 +58,7 @@ CameraType.prototype.update = function(dt){
 
 CameraType.prototype.startKeyboard = function(){
     this.kill();
+    var me = this;
     this.kill = dev.keyBoard(document.body, function(obj){
         var speed = {
             "look" : 1.5,
@@ -66,8 +67,8 @@ CameraType.prototype.startKeyboard = function(){
 
         function cc(ch, t, n){
             if(obj.code == ch){
-                if(obj.type == 'down') lc[t][n] = speed[t];
-                else lc[t][n] = 0;
+                if(obj.type == 'down') me[t][n] = speed[t];
+                else me[t][n] = 0;
             }
         }
         var moveSpeed = 0.8;
@@ -82,5 +83,49 @@ CameraType.prototype.startKeyboard = function(){
         cc(68, 'go', 'Right');
         cc(90, 'go', 'Up');
         cc(88, 'go', 'Down');
+        if(obj.code == 82 && obj.type == 'down'){
+            me.reset();
+            me.startKeyboard();
+        }
     });
+};
+
+CameraType.prototype.startVR = function(){
+    //LVR
+    this.kill();
+    var lvr = new LVR();
+    var me = this;
+    
+    var _Function = function(e){
+        lvr.update(e.alpha, e.beta, e.gamma);
+        var ax = lvr.getMatrix();//.transpose();
+        var myTarget = new LV3(-ax.arr[2], ax.arr[6], ax.arr[10]);
+        myTarget.iunit();
+        
+        var yAngle = 57.3*Math.atan2(myTarget.z, myTarget.x);
+        var cpy = myTarget.copy();
+        cpy.y = 0;
+        cpy.iunit();
+        var dp = cpy.dot(myTarget);
+        var xAngle = Math.acos(dp) * 57.3;
+        
+        
+        if(yAngle < 0){
+            yAngle = 360 + yAngle;
+        }
+        
+        if(xAngle < 35){
+            if(myTarget.y < 0){
+                xAngle *= -1;
+            }
+            me.c.angles.x = xAngle;
+        }
+        
+        me.c.angles.y = yAngle;
+    };
+    
+    window.addEventListener('deviceorientation', _Function);
+    this.kill = function(){
+        window.removeEventListener('deviceorientation', _Function);
+    };
 };

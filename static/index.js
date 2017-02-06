@@ -93,18 +93,3 @@ function interact(){
 
 
 
-//LVR
-/*
-var lvr = new LVR();
-window.addEventListener('deviceorientation', function(e){
-    //console.log(a++);
-    if(1){
-        lvr.update(e.alpha, e.beta, e.gamma);
-        var pos = new LV3(camera.position.x, camera.position.y, camera.position.z);
-        var ax = lvr.getMatrix();//.transpose();
-        ax = new LV3(-ax.arr[2], ax.arr[6], ax.arr[10]);
-        //console.log(ax+'')
-        var lat = pos.add(ax);
-        camera.lookAt(new THREE.Vector3(lat.x, lat.y, lat.z));
-    }
-});*/
