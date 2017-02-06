@@ -36,9 +36,21 @@
             <button onclick="lc.startVR(),$('#cameraMenu').toggle()">_vr</button>
         </div>
         
-        <div id="cool" style="position:fixed;left : 20px;top : 100px;"></div>
+        <div id="LeftJoyStickX" class="OuterJoyStick">
+            <div id="LeftJoyStickY" class="InnerJoyStick"></div>
+        </div>
         
         <script src="obj.js"></script>
         <script src="index.js"></script>
+        <script>
+        
+            (function(){
+                var dev = new LDevice();
+                dev.touch(document, function(e){
+                    console.log(e);
+                });
+            })();
+        
+        </script>
     </body>
 </html>

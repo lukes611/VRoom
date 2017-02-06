@@ -11,7 +11,7 @@ var lc = new CameraType();
 
 var renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.shadowMapEnabled = true;
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(window.innerWidth * 0.95, window.innerHeight*0.95);
 document.body.appendChild(renderer.domElement);
 
 
