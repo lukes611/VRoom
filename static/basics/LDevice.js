@@ -98,12 +98,14 @@ LDevice.prototype.onScreenChange = function(f){
 };
 
 LDevice.prototype.keyBoard = function(object, f){
-	$(object).keydown(function _keydownFunction(event){
+    var _keydownFunction = function(event){
 		f({code:event.keyCode, type: 'down'}, event);
-	});
-	$(object).keyup(function _keyupFunction(event){
+	};
+    var _keyupFunction = function(event){
 		f({code:event.keyCode, type: 'up'}, event);
-	});
+	};
+	$(object).keydown(_keydownFunction);
+	$(object).keyup(_keyupFunction);
     return function(){
         $(object).off('keydown', _keydownFunction);
         $(object).off('keyup', _keyupFunction);
