@@ -37,23 +37,85 @@
         </div>
         
         <div id="LeftJoyStickSide">
-            <div id="LSB" style="position:absolute;width:100px;height:100px;background-color:blue;"></div>
-            <div id="LS" style="position:relative;width:80px;height:80px;background-color:green;"></div>
+            <div id="LJSOuter"></div>
+            <div id="LJSInner"></div>
             
         </div>
         
         <script src="obj.js"></script>
         <script src="index.js"></script>
         <script>
+            
+            function JoyStick(outsideDivId, outerJSId, innerJSId){
+                //get references,
+                var container = $('#'+outsideDivId);
+                var outer = $('#'+outerJSId);
+                var outerSize = new LV2(outer.width(),outer.height());
+                var inner = $('#'+innerJSId);
+                var innerSize = new LV2(inner.width(),inner.height());
+                var position = new LV2(-1, -1);
+                var starting_position = position.copy();
+                var device = new LDevice();
+                var id = -1;
+                
+                
+                container.show();
+                
+                var hide = function(){
+                    outer.hide();
+                    inner.hide();
+                };
+                var show = function(){
+                    outer.show();
+                    inner.show();
+                };
+                
+                var setPosition = function(element, position){
+                    element.css('left',position.x+'px');
+                    element.css('top',position.y+'px');
+                };
+                
+                hide();
+                
+                //return a function which kills it all
+                device.touch(document.getElementById(outsideDivId), function(event){
+                    if(id == -1 && event.type == 'start'){
+                        id = event.id;
+                        starting_position = new LV2(event.x, event.y);
+                        position = starting_position.copy();
+                        setPosition(outer, starting_position.sub(outerSize.scale(0.5)));
+                        show();
+                    }else if(event.type == 'end'){
+                        hide();
+                        id = -1;
+                    }else if(id != -1 && event.type == 'move'){
+                        position = new LV2(event.x, event.y);
+                    }
+                    
+                    
+                    
+                    if(id != -1){
+                        var distance = position.dist(starting_position);
+                        var output_position = position.copy().sub(starting_position)
+                        .unit().scale(Math.min(outerSize.x*0.5,distance));
+                        output_position.iadd(starting_position);
+                        setPosition(inner, output_position.sub(innerSize.scale(0.5)));
+                    }
+                });
+            }
+            
+            JoyStick('LeftJoyStickSide', 'LJSOuter', 'LJSInner');
+            
+            
         
             (function(){
                 var dev = new LDevice();
                 var id = -1;
                 var p = new LV2(-1,-1);
                 var sp = new LV2(-1,-1);
-                var js = $('#LS');
+                var js = $('#LJSInner');
                 var dv = $('#LeftJoyStickSide');
-                var dvi = $('#LSB');
+                var dvi = $('#LJSOuter');
                 js.hide();
                 dvi.hide();
                 dev.touch(document.getElementById('LeftJoyStickSide'), function(e){
@@ -74,10 +136,10 @@
                     }
                     
                     if(id != -1){
-                        var dist = p.dist(sp);
-                        console.log(dist);
-                        var np = p.copy().sub(sp).unit().scale(Math.min(50,dist));
-                        np.iadd(sp);
+                        var distance = position.distance(starting_position);
+                        var output_position = position.copy().sub(starting_position)
+                        .unit().scale(Math.min(50,distance));
+                        output_position.iadd(startin_position);
                         js.css('left',(np.x-40)+'px');
                         js.css('top',(np.y-40)+'px');
                         var _ = 100/2;
@@ -86,7 +148,7 @@
                         
                     }
                 });
-            })();
+            });
         
         </script>
     </body>
