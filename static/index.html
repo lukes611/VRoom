@@ -36,8 +36,10 @@
             <button onclick="lc.startVR(),$('#cameraMenu').toggle()">_vr</button>
         </div>
         
-        <div id="LeftJoyStickX" class="OuterJoyStick">
-            <div id="LeftJoyStickY" class="InnerJoyStick"></div>
+        <div id="LeftJoyStickSide">
+            <div id="LSB" style="position:absolute;width:100px;height:100px;background-color:blue;"></div>
+            <div id="LS" style="position:relative;width:80px;height:80px;background-color:green;"></div>
+            
         </div>
         
         <script src="obj.js"></script>
@@ -46,8 +48,43 @@
         
             (function(){
                 var dev = new LDevice();
-                dev.touch(document, function(e){
-                    console.log(e);
+                var id = -1;
+                var p = new LV2(-1,-1);
+                var sp = new LV2(-1,-1);
+                var js = $('#LS');
+                var dv = $('#LeftJoyStickSide');
+                var dvi = $('#LSB');
+                js.hide();
+                dvi.hide();
+                dev.touch(document.getElementById('LeftJoyStickSide'), function(e){
+                    if(id == -1 && e.type == 'start'){
+                        id = e.id;
+                        p.x = e.x;
+                        p.y = e.y;
+                        sp = p.copy();
+                        js.show();
+                        dvi.show();
+                    }else if(e.type == 'end' && e.id == id){
+                        id = -1;
+                        js.hide();
+                        dvi.hide();
+                    }else if(e.type == 'move' && id == e.id){
+                        p.x = e.x;
+                        p.y = e.y;
+                    }
+                    
+                    if(id != -1){
+                        var dist = p.dist(sp);
+                        console.log(dist);
+                        var np = p.copy().sub(sp).unit().scale(Math.min(50,dist));
+                        np.iadd(sp);
+                        js.css('left',(np.x-40)+'px');
+                        js.css('top',(np.y-40)+'px');
+                        var _ = 100/2;
+                        dvi.css('left',(sp.x-_)+'px');
+                        dvi.css('top',(sp.y-_)+'px');
+                        
+                    }
                 });
             })();
         
