@@ -129,3 +129,113 @@ CameraType.prototype.startVR = function(){
         window.removeEventListener('deviceorientation', _Function);
     };
 };
+
+CameraType.prototype.startTouch = function(){
+    this.kill();
+    var me = this;
+    var move_speed = 0.4;
+    var look_speed = 1.2;
+    
+    var ids = [];
+    
+    var setDirection = function(type, dir1, dir2, amnt){
+        if(amnt < 0){
+            me[type][dir1] = Math.abs(amnt);
+            me[type][dir2] = 0;
+        }else if(amnt > 0){
+            me[type][dir1] = 0;
+            me[type][dir2] = amnt;
+        }else{
+            me[type][dir1] = me[type][dir2] = 0;
+        }
+    };
+    
+    var killF1 = this.JoyStickHelper('LeftJoyStickSide', 'LJSOuter', 'LJSInner', ids, function(p){
+        setDirection('go', 'Left', 'Right', p.x * move_speed);
+        setDirection('go','Forward', 'Backward', p.y * move_speed);
+    });
+    var killF2 = this.JoyStickHelper('RightJoyStickSide', 'RJSOuter', 'RJSInner', ids, function(p){
+        setDirection('look','Left', 'Right', p.x * look_speed);
+        setDirection('look','Up', 'Down', p.y * look_speed);
+    });
+    this.kill = function(){killF1(); killF2();};
+};
+
+
+CameraType.prototype.JoyStickHelper = function(outsideDivId, outerJSId, innerJSId, ids, output){
+    //get references,
+    var container = $('#'+outsideDivId);
+    output = output || function(){};
+    var outer = $('#'+outerJSId);
+    var outerSize = new LV2(outer.width(),outer.height());
+    var inner = $('#'+innerJSId);
+    var innerSize = new LV2(inner.width(),inner.height());
+    var position = new LV2(-1, -1);
+    var starting_position = position.copy();
+    var device = new LDevice();
+    var id = -1;
+
+
+    container.show();
+
+    var hide = function(){
+        outer.hide();
+        inner.hide();
+    };
+    var show = function(){
+        outer.show();
+        inner.show();
+    };
+
+    var setPosition = function(element, position){
+        element.css('left',position.x+'px');
+        element.css('top',position.y+'px');
+    };
+    
+    var outputPosition = function(){
+        var p = position.sub(starting_position);
+        var dist = position.dist(starting_position);
+        p.iunit();
+        p.iscale(Math.min(dist, outerSize.x*0.5,dist));
+        p.iscale(1/(outerSize.x*0.5));
+        output(p);
+    };
+
+    hide();
+
+    //return a function which kills it all
+    var kill = device.touch(document.getElementById(outsideDivId), function(event){
+        if(id == -1 && event.type == 'start' && ids.indexOf(event.id) == -1){
+            id = event.id;
+            ids.push(id);
+            starting_position = new LV2(event.x, event.y);
+            position = starting_position.copy();
+            setPosition(outer, starting_position.sub(outerSize.scale(0.5)));
+            show();
+            outputPosition();
+        }else if(event.type == 'end' && event.id == id){
+            hide();
+            ids.splice(ids.indexOf(id));
+            id = -1;
+            output(new LV2(0,0));
+        }else if(id == event.id && event.type == 'move'){
+            position = new LV2(event.x, event.y);
+            outputPosition();
+        }
+
+
+
+        if(id != -1){
+            var distance = position.dist(starting_position);
+            var output_position = position.copy().sub(starting_position)
+            .unit().scale(Math.min(outerSize.x*0.5,distance));
+            output_position.iadd(starting_position);
+            setPosition(inner, output_position.sub(innerSize.scale(0.5)));
+        }
+    });
+
+    return function(){
+        kill();
+        container.hide();
+    };
+};

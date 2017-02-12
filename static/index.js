@@ -11,8 +11,15 @@ var lc = new CameraType();
 
 var renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.shadowMapEnabled = true;
-renderer.setSize(window.innerWidth * 0.95, window.innerHeight*0.95);
+renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+renderer.domElement.className = 'canv';
+
+dev.onScreenChange(function(info){
+    renderer.setSize(info.width, info.height);
+    camera.aspect = info.width / info.height;
+    camera.updateProjectionMatrix();
+});
 
 
 var cubes = [generateCube({position:[0,3,0],rotation:[20,5,3], mass:.5}),

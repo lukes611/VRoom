@@ -21,6 +21,8 @@ body{
     z-index : 2;
 }
 
+
+
 .menuSection{
     background-color : rgba(0,0,0,0);
     position : fixed;
@@ -42,24 +44,60 @@ body{
     border : 2px solid white;
 }
 
+@media screen and (max-width: 600px) {
+    #cameraToggle{ width : 20%;}
+    #menuToggle{ width : 20%;}
+    .menuSection{
+        width : 70%;
+        left : 15%;
+        height : 80vh;
+        top : 25vh;
+    }
+    
+    .menuSection button{
+        font-size : 300%;
+    }
+
+}
+
 #LeftJoyStickSide{
     width : 50%;
     height : 80vh;
     position : fixed;
     bottom : 0;
-    background-color : rgba(255,0,0,0.2);
+    left : 0;
+    /*background-color : rgba(255,0,0,0.2);*/
+    display : none;
 }
 
-#LJSOuter{
+#RightJoyStickSide{
+    width : 50%;
+    height : 80vh;
+    position : fixed;
+    bottom : 0;
+    right : 0;
+    /*background-color : rgba(255,152,0,0.2);*/
+    display : none;
+}
+
+.canv{
+    margin : 0;
+    padding : 0;
+}
+
+
+.JSOuter{
     position:absolute;
+    width:80px;
+    height:80px;
+    border-radius : 80px;
+    border : 2px solid grey;
+}
+
+.JSInner{
+    position:relative;
     width:50px;
     height:50px;
-    background-color:blue;
-}
-
-#LJSInner{
-    position:relative;
-    width:30px;
-    height:30px;
-    background-color:green;
+    border-radius : 50px;
+    border : 2px solid grey;
 }

@@ -164,7 +164,8 @@ LDevice.prototype.rightClick = function(object, f){
 
 LDevice.prototype.touch = function(object, f){
 	var me = this;
-	object.addEventListener('touchstart', function(event){
+    
+    var startFunction = function(event){
 		event.preventDefault();
 		var rect = event.target.getBoundingClientRect();
 		for(var i = 0; i < event.touches.length; i++){
@@ -175,8 +176,9 @@ LDevice.prototype.touch = function(object, f){
 				type : 'start'
 			});
 		}
-	}, false);
-	object.addEventListener('touchmove', function(event){
+	};
+    
+    var moveFunction = function(event){
 		event.preventDefault();
 		var rect = event.target.getBoundingClientRect();
 		for(var i = 0; i < event.changedTouches.length; i++){
@@ -187,8 +189,9 @@ LDevice.prototype.touch = function(object, f){
 				type : 'move'
 			});
 		}
-	}, false);
-	object.addEventListener('touchend', function(event){
+	};
+    
+    var endFunction = function(event){
 		event.preventDefault();
 		var rect = event.target.getBoundingClientRect();
 		for(var i = 0; i < event.changedTouches.length; i++){
@@ -199,5 +202,15 @@ LDevice.prototype.touch = function(object, f){
 				type : 'end'
 			});
 		}
-	}, false);
+	};
+    
+	object.addEventListener('touchstart', startFunction, false);
+	object.addEventListener('touchmove', moveFunction, false);
+	object.addEventListener('touchend', endFunction, false);
+    
+    return function(){
+        object.removeEventListener('touchstart', startFunction);
+        object.removeEventListener('touchmove', moveFunction);
+        object.removeEventListener('touchend', endFunction);
+    };
 };
