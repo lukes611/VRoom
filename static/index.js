@@ -30,10 +30,10 @@ var cubes = [generateCube({position:[0,3,0],rotation:[20,5,3], mass:.5}),
 var floor = generateCube({size:[50,.2,50], mass:0});
 
 //add walls
-cubes.push(generateCube({position : [0,5,20],size : [100,20,1], mass : 0}));
-cubes.push(generateCube({position : [0,5,-20],size : [100,20,1], mass : 0}));
-cubes.push(generateCube({position : [20,5,0],size : [1,20,100], mass : 0}));
-cubes.push(generateCube({position : [-20,5,0],size : [1,20,100], mass : 0}));
+cubes.push(generateCube({position : [0,5,24.5],size : [50,20,1], mass : 0}));
+cubes.push(generateCube({position : [0,5,-24.5],size : [50,20,1], mass : 0}));
+cubes.push(generateCube({position : [24.5,5,0],size : [1,20,50], mass : 0}));
+cubes.push(generateCube({position : [-24.5,5,0],size : [1,20,50], mass : 0}));
 
 cubes.forEach(cube => scene.add(cube.mesh));
 scene.add(floor.mesh);
