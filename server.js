@@ -28,5 +28,5 @@ var p = 3000
 _.use(e.static('static'))
 _.listen(p, function(){
     console.log('listening on port:', p)
-    getIpAddresses(true).forEach(x => console.log(x.ip));
+    getIpAddresses(true).forEach(function(x){return console.log(x.ip);});
 })
